@@ -1,0 +1,14 @@
+---
+- name: Install System Packages
+  package:
+      name: "{{ item }}"
+      state: present
+  loop: "{{ system_packages }}"
+
+- name: Manage service state
+  service:
+      name: "{{ item.name }}"
+      state: "{{ item.state }}"
+      enabled: "{{ item.enabled }}"
+  loop: "{{ system_service}}"
+  notify: restart nginx
