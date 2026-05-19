@@ -1,0 +1,61 @@
+---
+- name: DEPLOY SPRING APP
+  hosts: new_servers
+  become: yes
+  gather_facts: true
+
+  vars: 
+    tomcat_version: "7.0.108" 
+    tomcat_root: "/opt/tomcat/apache-tomcat-7.0.108"
+
+  tasks:
+    - name: Update and install Java, Maven, MYSQL and Git
+      apt:
+        name:
+          - openjdk-11-jdk
+          - maven
+          - mysql server
+          - git
+        state: present
+        update_cache: yes
+
+    - name: Start MYSQL server
+      service: 
+        name: mysql
+        state: started
+        enabled: yes
+      
+    - name: Clone the source code from Git
+      git: 
+        repo: "https://github.com/opstree/spring3hibernate"
+        dest: "/tmp/spring_app"
+        force: yes
+
+    - name: Build the WAR file using Maven
+      shell: "mvn clean package -DskipTests"
+      args: 
+        chdir: "/tmp/spring_app"
+
+    - name: Create folder for tomcat
+      file:
+        path: /opt/tomcat
+        state: directory
+
+    - name: Download and unpack tomcat
+      unarchive:
+        src: "https://archive.apache.org/dist/tomcat/tomcat-7/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: /opt/tomcat
+        remote_src: yes
+
+    - name: Copy the built WAR to Tomcat webapps
+      copy:
+        src: "/tmp/spring_app/target/Spring3HibernateApp.war"
+        dest: "{{ tomcat_root }}/webapps/"
+        remote_src: yes
+
+    - name: Start the tomcat
+      shell: |
+        ./bin/shutdown.sh || true
+        ./bin/startup.sh
+      args:
+        chdir: "{{ tomcat_root }}"

@@ -1,0 +1,7 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for nginx_v2
+nginx_version: latest
+nginx_port: 80
+nginx_worker_processes: auto
+nginx_keepalive_timeout: 90
