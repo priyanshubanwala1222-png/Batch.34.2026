@@ -1,0 +1,25 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for nginx
+
+# ─── Detect OS and include the right tasks ────────────────────────────────────
+
+# ─── Nginx version ────────────────────────────────────────────────────────────
+nginx_version: "1.29.8"          # pinned version installed on both OS
+
+# ─── Port ─────────────────────────────────────────────────────────────────────
+nginx_port: 8080                  # listening port
+
+# ─── Document root ────────────────────────────────────────────────────────────
+nginx_root: "/var/www/html"
+
+# ─── Server name ──────────────────────────────────────────────────────────────
+nginx_server_name: "_"            # _ means catch-all / default server
+
+# ─── Worker config ────────────────────────────────────────────────────────────
+nginx_worker_processes: "auto"
+nginx_worker_connections: 1024
+
+# ─── Logging ──────────────────────────────────────────────────────────────────
+nginx_access_log: "/var/log/nginx/access.log"
+nginx_error_log:  "/var/log/nginx/error.log"

@@ -1,0 +1,31 @@
+## Managed by Ansible — do not edit manually
+## Role: nginx | Template: vhost.conf.j2
+
+server {
+    listen       {{ nginx_port }};
+    listen       [::]:{{ nginx_port }};
+
+    server_name  {{ nginx_server_name }};
+
+    root         {{ nginx_root }};
+    index        index.html index.htm;
+
+    access_log   {{ nginx_access_log }};
+    error_log    {{ nginx_error_log }};
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # Health check endpoint — useful for load balancer checks
+    location /health {
+        access_log  off;
+        return 200  "OK\n";
+        add_header  Content-Type text/plain;
+    }
+
+    # Block hidden files (e.g. .htaccess, .git)
+    location ~ /\. {
+        deny all;
+    }
+}
