@@ -1,9 +1,0 @@
----
-- name: Create directory structure
-  file: 
-    path: "{{ item.path }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
-    mode: "{{ item.mode | default('0755')}}"
-    state: directory
-  loop: "{{ system_folders}}"

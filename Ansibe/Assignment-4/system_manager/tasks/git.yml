@@ -1,9 +1,0 @@
----
-- name: Clone repository
-  git: 
-    repo: "{{ item.repo}}"
-    dest: "{{ item.dest}}"
-    version: "{{ item.version | default('main') }}"
-    clone: yes
-    update: yes
-  loop: "{{ system_repos }}"
