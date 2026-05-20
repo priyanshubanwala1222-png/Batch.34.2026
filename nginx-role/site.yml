@@ -1,4 +1,5 @@
 ---
+# site.yml
 - name: Install and configure Nginx on Ubuntu and RHEL
   hosts: all
   become: true

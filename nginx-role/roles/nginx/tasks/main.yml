@@ -7,9 +7,9 @@
   include_tasks: ubuntu.yml
   when: ansible_facts['distribution'] == "Ubuntu"
 
-- name: Include RHEL tasks
-  include_tasks: rhel.yml
-  when: ansible_facts['distribution'] in ["RedHat", "CentOS", "Rocky", "AlmaLinux"]
+# - name: Include RHEL tasks
+#   include_tasks: rhel.yml
+#   when: ansible_facts['distribution'] in ["RedHat", "CentOS", "Rocky", "AlmaLinux"]
 
 # ─── Deploy nginx main config ─────────────────────────────────────────────────
 - name: Deploy nginx main config
@@ -53,15 +53,15 @@
   when: ansible_facts['distribution'] == "Ubuntu"
   notify: Restart nginx
 
-- name: Deploy server block config (RHEL)
-  template:
-    src: vhost.conf.j2
-    dest: /etc/nginx/conf.d/vhost.conf
-    owner: root
-    group: root
-    mode: "0644"
-  when: ansible_facts['distribution'] in ["RedHat", "CentOS", "Rocky", "AlmaLinux"]
-  notify: Restart nginx
+# - name: Deploy server block config (RHEL)
+#   template:
+#     src: vhost.conf.j2
+#     dest: /etc/nginx/conf.d/vhost.conf
+#     owner: root
+#     group: root
+#     mode: "0644"
+#   when: ansible_facts['distribution'] in ["RedHat", "CentOS", "Rocky", "AlmaLinux"]
+#   notify: Restart nginx
 
 # ─── Firewall ─────────────────────────────────────────────────────────────────
 - name: Allow port {{ nginx_port }} in UFW (Ubuntu)
@@ -71,13 +71,13 @@
     proto: tcp
   when: ansible_facts['distribution'] == "Ubuntu"
 
-- name: Allow port {{ nginx_port }} in firewalld (RHEL)
-  firewalld:
-    port: "{{ nginx_port }}/tcp"
-    permanent: true
-    state: enabled
-    immediate: true
-  when: ansible_facts['distribution'] in ["RedHat", "CentOS", "Rocky", "AlmaLinux"]
+# - name: Allow port {{ nginx_port }} in firewalld (RHEL)
+#   firewalld:
+#     port: "{{ nginx_port }}/tcp"
+#     permanent: true
+#     state: enabled
+#     immediate: true
+#   when: ansible_facts['distribution'] in ["RedHat", "CentOS", "Rocky", "AlmaLinux"]
 
 # ─── Start and enable nginx ───────────────────────────────────────────────────
 - name: Ensure nginx is started and enabled

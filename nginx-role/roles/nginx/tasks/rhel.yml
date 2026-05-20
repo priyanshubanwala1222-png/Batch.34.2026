@@ -1,47 +1,47 @@
----
-# ─── RHEL/CentOS: install specific nginx version ─────────────────────────────
+# ---
+# # ─── RHEL/CentOS: install specific nginx version ─────────────────────────────
 
-# MOVED TO THE TOP: Must configure the clean repo URL first
-- name: Add official nginx repo (RHEL)
-  yum_repository:
-    name: "nginx-{{ 'mainline' if ansible_facts['distribution_major_version'] == '10' else 'stable' }}"
-    description: Nginx Official Repo
-    baseurl: "https://nginx.org/packages/{{ 'mainline' if ansible_facts['distribution_major_version'] == '10' else 'stable' }}/rhel/{{ ansible_facts['distribution_major_version'] }}/$basearch/"
-    gpgcheck: true
-    gpgkey: "https://nginx.org/keys/nginx_signing.key"
-    enabled: true
+# # MOVED TO THE TOP: Must configure the clean repo URL first
+# - name: Add official nginx repo (RHEL)
+#   yum_repository:
+#     name: "nginx-{{ 'mainline' if ansible_facts['distribution_major_version'] == '10' else 'stable' }}"
+#     description: Nginx Official Repo
+#     baseurl: "https://nginx.org/packages/{{ 'mainline' if ansible_facts['distribution_major_version'] == '10' else 'stable' }}/rhel/{{ ansible_facts['distribution_major_version'] }}/$basearch/"
+#     gpgcheck: true
+#     gpgkey: "https://nginx.org/keys/nginx_signing.key"
+#     enabled: true
 
-# CONSOLIDATED: Fetches all core dependencies at once now that the repo is safe
-- name: Install prerequisite packages (RHEL)
-  yum:
-    name:
-      - curl
-      - gnupg2
-      - ca-certificates
-      - yum-utils
-    state: present
+# # CONSOLIDATED: Fetches all core dependencies at once now that the repo is safe
+# - name: Install prerequisite packages (RHEL)
+#   yum:
+#     name:
+#       - curl
+#       - gnupg2
+#       - ca-certificates
+#       - yum-utils
+#     state: present
 
-- name: Install pinned nginx version (RHEL)
-  dnf:
-    name: "nginx-2:1.29.8-1.el10.ngx"
-    state: present
-  become: true
-  notify: Restart nginx
+# - name: Install pinned nginx version (RHEL)
+#   dnf:
+#     name: "nginx-2:1.29.8-1.el10.ngx"
+#     state: present
+#   become: true
+#   notify: Restart nginx
 
-- name: Lock nginx version with versionlock (RHEL)
-  command: yum versionlock add nginx
-  changed_when: false        # versionlock always exits 0 even if already locked
+# - name: Lock nginx version with versionlock (RHEL)
+#   command: yum versionlock add nginx
+#   changed_when: false        # versionlock always exits 0 even if already locked
 
-- name: Enable and start nginx service (RHEL — SELinux-aware)
-  service:
-    name: nginx
-    state: started
-    enabled: true
+# - name: Enable and start nginx service (RHEL — SELinux-aware)
+#   service:
+#     name: nginx
+#     state: started
+#     enabled: true
 
-- name: Allow nginx to bind to port {{ nginx_port }} via SELinux
-  seport:
-    ports: "{{ nginx_port }}"
-    proto: tcp
-    setype: http_port_t
-    state: present
-  when: ansible_selinux.status == "enabled"
+# - name: Allow nginx to bind to port {{ nginx_port }} via SELinux
+#   seport:
+#     ports: "{{ nginx_port }}"
+#     proto: tcp
+#     setype: http_port_t
+#     state: present
+#   when: ansible_selinux.status == "enabled"
