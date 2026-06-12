@@ -1,0 +1,13 @@
+# aws_ec2.yml
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1 # Change to your region
+
+# Group instances by their tags
+keyed_groups:
+  - key: tag.Role
+    prefix: role
+
+# Set the SSH connection details automatically
+hostnames:
+  - ip-address   # Or public-ip-address depending on your network layout
